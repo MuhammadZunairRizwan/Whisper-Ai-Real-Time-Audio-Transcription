@@ -1,4 +1,4 @@
-### Transcripto - Real-Time Audio Transcription
+# Transcripto - Real-Time Audio Transcription
 ## Overview
 Whisper-Ai is a real-time speech-to-text transcription application powered by **OpenAI Whisper** and **Streamlit**. This application captures live audio input, processes it using Whisper, and displays the transcribed text in real time.
 
