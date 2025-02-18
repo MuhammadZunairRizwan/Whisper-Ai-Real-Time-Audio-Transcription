@@ -1,4 +1,6 @@
+scipy
+openai-whisper
 sounddevice
 numpy
-scipy
-whisper
+torch
+torchaudio
