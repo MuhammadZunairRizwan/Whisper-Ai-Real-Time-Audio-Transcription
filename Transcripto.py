@@ -5,25 +5,34 @@ import whisper
 import queue
 import sys
 import os
-st.set_page_config(page_title="Transcripto", layout="wide")
-st.title("🎤 Real-Time Audio Transcription")
-st.subheader("Using OpenAI Whisper for speech-to-text conversion")
-st.markdown(
-    """
-    <style>
-    [data-testid="stAppViewContainer"] {
-        background-image: url("https://media-private.canva.com/qxAIA/MAGe4KqxAIA/1/p.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJWF6QO3UH4PAAJ6Q%2F20250212%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250212T081624Z&X-Amz-Expires=20588&X-Amz-Signature=76f2b71d720f8998ae3dfd36b26bea925d1fab912703dc5680ba6dac628388a7&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Wed%2C%2012%20Feb%202025%2013%3A59%3A32%20GMT"); 
-    }
+import base64
 
-    /* Optional: Change text color for visibility */
-    [data-testid="stAppViewContainer"] * {
+current_dir = os.path.dirname(os.path.abspath(__file__))
+image_path = os.path.join(current_dir, "cover.jpg")
+def get_base64(image_path):
+    with open(image_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode()
+base64_image = get_base64(image_path)
+st.set_page_config(page_title="Transcripto", layout="wide")
+st.markdown(
+    f"""
+    <style>
+    [data-testid="stAppViewContainer"] {{
+        background-image: url("data:image/jpeg;base64,{base64_image}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }}
+    [data-testid="stAppViewContainer"] {{
         color: rgb(255,255,255);  !important;
-    }
+    }}
     </style>
     """,
     unsafe_allow_html=True
 )
 
+st.title("🎤 Real-Time Audio Transcription")
+st.subheader("Using OpenAI Whisper for speech-to-text conversion")
 st.write("Transcription")
 model = whisper.load_model("base")
 
@@ -66,18 +75,18 @@ try:
             audio_data = audio_queue.get()
             audio_buffer.append(audio_data.flatten())
 
-            # Process audio in batches
+           
             if len(audio_buffer) >= BUFFER_SIZE:
                 audio_input = np.concatenate(audio_buffer)
                 result = model.transcribe(audio_input, language="en")
                 transcription+=" " + result["text"]
                 placeholder.write(transcription)
-                audio_buffer = []  # Clear the buffer
+                audio_buffer = [] 
 
 except KeyboardInterrupt:
     print("Stopping transcription...")
 
-# Clean up
+
 stream.stop()
 stream.close()
 
